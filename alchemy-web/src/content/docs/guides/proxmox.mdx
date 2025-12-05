@@ -1,0 +1,208 @@
+---
+title: Proxmox VE
+description: Manage Proxmox Virtual Environment resources using Alchemy.
+sidebar:
+  order: 30
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+This guide shows how to create and manage [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) virtual machines and containers using Alchemy.
+
+<Steps>
+
+1. **Install dependencies**
+
+   Add the required dependency to your project:
+
+   <Tabs syncKey="pkgManager">
+     <TabItem label="bun">
+       ```sh
+       bun add proxmox-api
+       ```
+     </TabItem>
+     <TabItem label="npm">
+       ```sh
+       npm install proxmox-api
+       ```
+     </TabItem>
+     <TabItem label="pnpm">
+       ```sh
+       pnpm add proxmox-api
+       ```
+     </TabItem>
+     <TabItem label="yarn">
+       ```sh
+       yarn add proxmox-api
+       ```
+     </TabItem>
+   </Tabs>
+
+2. **Set credentials**
+
+   Create an API token in your Proxmox server under Datacenter > Permissions > API Tokens. Add the credentials to your `.env` file:
+
+   ```bash
+   PROXMOX_HOST=your_proxmox_host
+   PROXMOX_TOKEN_ID=root@pam!mytoken
+   PROXMOX_TOKEN_SECRET=your_token_secret
+   ALCHEMY_PASSWORD=change-me
+   ```
+
+   :::tip
+   For self-signed certificates, you can set `rejectUnauthorized: false` in your resource options. However, for production use, consider configuring a valid SSL certificate on your Proxmox server.
+   :::
+
+3. **Create `alchemy.run.ts`**
+
+   Create an Alchemy configuration file to manage your Proxmox resources:
+
+   ```typescript
+   import alchemy from "alchemy";
+   import { VirtualMachine, Container } from "alchemy/proxmox";
+
+   const app = await alchemy("proxmox-example");
+
+   // Create a virtual machine
+   const vm = await VirtualMachine("web-server", {
+     node: "pve",
+     name: "web-server",
+     memory: 4096,
+     cores: 4,
+     sockets: 1,
+     ostype: "l26",
+     scsi0: "local-lvm:32",
+     net0: "virtio,bridge=vmbr0",
+     rejectUnauthorized: false, // for self-signed certs
+   });
+
+   // Create an LXC container
+   const ct = await Container("app-container", {
+     node: "pve",
+     hostname: "app-container",
+     ostemplate: "local:vztmpl/debian-12-standard_12.0-1_amd64.tar.zst",
+     memory: 2048,
+     cores: 2,
+     rootfs: "local-lvm:8",
+     net0: "name=eth0,bridge=vmbr0,ip=dhcp",
+     rejectUnauthorized: false,
+   });
+
+   console.log({
+     vmId: vm.vmid,
+     vmName: vm.name,
+     vmStatus: vm.status,
+     containerId: ct.vmid,
+     containerHostname: ct.hostname,
+     containerStatus: ct.status,
+   });
+
+   await app.finalize();
+   ```
+
+4. **Deploy**
+
+   Run your Alchemy script to create the resources:
+
+   <Tabs syncKey="pkgManager">
+     <TabItem label="bun">
+       ```sh
+       bun ./alchemy.run.ts
+       ```
+     </TabItem>
+     <TabItem label="npm">
+       ```sh
+       npx tsx ./alchemy.run.ts
+       ```
+     </TabItem>
+     <TabItem label="pnpm">
+       ```sh
+       pnpm tsx ./alchemy.run.ts
+       ```
+     </TabItem>
+     <TabItem label="yarn">
+       ```sh
+       yarn tsx ./alchemy.run.ts
+       ```
+     </TabItem>
+   </Tabs>
+
+   You should see output like:
+
+   ```sh
+   {
+     vmId: 100,
+     vmName: "web-server",
+     vmStatus: "stopped",
+     containerId: 101,
+     containerHostname: "app-container",
+     containerStatus: "stopped"
+   }
+   ```
+
+5. **Tear Down**
+
+   To delete the resources:
+
+   <Tabs syncKey="pkgManager">
+     <TabItem label="bun">
+       ```sh
+       bun ./alchemy.run.ts --destroy
+       ```
+     </TabItem>
+     <TabItem label="npm">
+       ```sh
+       npx tsx ./alchemy.run.ts --destroy
+       ```
+     </TabItem>
+     <TabItem label="pnpm">
+       ```sh
+       pnpm tsx ./alchemy.run.ts --destroy
+       ```
+     </TabItem>
+     <TabItem label="yarn">
+       ```sh
+       yarn tsx ./alchemy.run.ts --destroy
+       ```
+     </TabItem>
+   </Tabs>
+
+</Steps>
+
+## Authentication Options
+
+### Username/Password
+
+You can also authenticate with username and password:
+
+```bash
+PROXMOX_HOST=your_proxmox_host
+PROXMOX_USERNAME=root@pam
+PROXMOX_PASSWORD=your_password
+```
+
+### Per-Resource Credentials
+
+Pass credentials directly to resources:
+
+```typescript
+const vm = await VirtualMachine("my-vm", {
+  host: "192.168.1.100",
+  tokenID: "root@pam!mytoken",
+  tokenSecret: alchemy.secret.env.PROXMOX_TOKEN_SECRET,
+  node: "pve",
+  // ...
+});
+```
+
+## Available Resources
+
+- [VirtualMachine](/providers/proxmox/virtual-machine/) - QEMU/KVM virtual machines
+- [Container](/providers/proxmox/container/) - LXC containers
+- [Storage](/providers/proxmox/storage/) - Storage pools
+
+## Additional Resources
+
+- [Proxmox VE Documentation](https://pve.proxmox.com/pve-docs/)
+- [Proxmox VE API Documentation](https://pve.proxmox.com/pve-docs/api-viewer/)
+- [Creating API Tokens](https://pve.proxmox.com/wiki/User_Management#pveum_tokens)
