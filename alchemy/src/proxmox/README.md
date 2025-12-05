@@ -8,32 +8,56 @@ The Proxmox provider uses the [proxmox-api](https://github.com/UrielCh/proxmox-a
 
 ## Implementation Status
 
-### ✅ Implemented Resources
+### ✅ Implemented Resources (41 Total)
 
 | Category | Resource | Description | Status |
 |----------|----------|-------------|--------|
 | **Compute** | VirtualMachine | QEMU/KVM virtual machines | ✅ Complete |
 | **Compute** | Container | LXC containers | ✅ Complete |
 | **Storage** | Storage | Storage pools (dir, lvm, nfs, etc.) | ✅ Complete |
+| **Storage** | StorageContent | ISO images, templates, backups | ✅ Complete |
 | **Access Control** | User | User accounts | ✅ Complete |
 | **Access Control** | Group | User groups | ✅ Complete |
 | **Access Control** | Role | Permission roles | ✅ Complete |
 | **Access Control** | ACL | Access control lists | ✅ Complete |
 | **Access Control** | APIToken | API tokens | ✅ Complete |
+| **Access Control** | AuthDomain | LDAP, AD, OpenID domains | ✅ Complete |
 | **Resource Pools** | Pool | Resource pools | ✅ Complete |
-| **Networking** | NodeNetwork | Network interfaces | ✅ Complete |
-| **Snapshots** | VMSnapshot | VM snapshots | ✅ Complete |
-| **Snapshots** | ContainerSnapshot | Container snapshots | ✅ Complete |
+| **Cluster** | ClusterStatus | Cluster status and health | ✅ Complete |
+| **Cluster** | ClusterOptions | Datacenter-wide options | ✅ Complete |
+| **Node** | Node | Node status and metrics | ✅ Complete |
+| **Node** | NodeNetwork | Network interfaces | ✅ Complete |
+| **Node** | NodeDNS | DNS settings | ✅ Complete |
+| **VM Operations** | VMSnapshot | VM snapshots | ✅ Complete |
+| **VM Operations** | VMClone | Clone VMs | ✅ Complete |
+| **VM Operations** | VMTemplate | Convert VM to template | ✅ Complete |
+| **VM Operations** | VMMigrate | Live migration | ✅ Complete |
+| **Container Ops** | ContainerSnapshot | Container snapshots | ✅ Complete |
+| **Container Ops** | ContainerClone | Clone containers | ✅ Complete |
+| **Container Ops** | ContainerTemplate | Convert to template | ✅ Complete |
+| **Container Ops** | ContainerMigrate | Container migration | ✅ Complete |
 | **High Availability** | HAGroup | HA failover groups | ✅ Complete |
 | **High Availability** | HAResource | HA managed resources | ✅ Complete |
 | **Replication** | ReplicationJob | VM/CT replication jobs | ✅ Complete |
 | **Firewall** | FirewallClusterRule | Cluster firewall rules | ✅ Complete |
 | **Firewall** | FirewallGroup | Security groups | ✅ Complete |
+| **Firewall** | FirewallAlias | IP/network aliases | ✅ Complete |
+| **Firewall** | FirewallIPSet | IP sets for rules | ✅ Complete |
+| **Firewall** | FirewallVMRule | VM firewall rules | ✅ Complete |
+| **Firewall** | FirewallNodeRule | Node firewall rules | ✅ Complete |
 | **SDN** | SDNZone | Virtual network zones | ✅ Complete |
 | **SDN** | SDNVNet | Virtual networks | ✅ Complete |
 | **SDN** | SDNSubnet | Network subnets | ✅ Complete |
+| **SDN** | SDNController | SDN controllers (BGP, EVPN) | ✅ Complete |
 | **Backup** | BackupJob | Scheduled backup jobs | ✅ Complete |
 | **ACME/SSL** | ACMEAccount | Let's Encrypt accounts | ✅ Complete |
+| **ACME/SSL** | ACMEPlugin | ACME DNS plugins | ✅ Complete |
+| **ACME/SSL** | Certificate | Node SSL certificates | ✅ Complete |
+| **Ceph** | CephPool | Ceph storage pools | ✅ Complete |
+| **Ceph** | CephOSD | Ceph object storage daemons | ✅ Complete |
+| **Ceph** | CephMon | Ceph monitor daemons | ✅ Complete |
+| **Ceph** | CephMgr | Ceph manager daemons | ✅ Complete |
+| **Monitoring** | MetricsServer | InfluxDB/Graphite metrics | ✅ Complete |
 
 ### 🚧 Planned Resources - Remaining API Coverage
 
@@ -43,63 +67,26 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| ClusterConfig | Cluster-wide configuration | High |
-| ClusterStatus | Cluster status and health | High |
-| ClusterResources | Cluster resource summary | High |
-| ClusterOptions | Datacenter-wide options | Medium |
-| ClusterJoin | Join nodes to cluster | Medium |
+| ClusterConfig | Cluster-wide configuration | Medium |
+| ClusterResources | Cluster resource summary | Low |
+| ClusterJoin | Join nodes to cluster | Low |
 
-#### Backup (Remaining)
+#### Ceph (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| Backup | Manual backup operations | High |
-| BackupConfig | Backup job configuration | Medium |
-
-#### Firewall (Remaining)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| FirewallClusterOptions | Cluster firewall options | Medium |
-| FirewallAlias | IP/network aliases | Medium |
-| FirewallIPSet | IP sets for rules | Medium |
-| FirewallNodeRules | Node-specific firewall rules | Medium |
-| FirewallVMRules | VM/CT firewall rules | Medium |
-
-#### ACME/SSL (Remaining)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| ACMEPlugin | ACME DNS plugins | Medium |
-| Certificate | Node SSL certificates | Medium |
-| ACMEChallenge | Certificate challenges | Low |
-
-#### SDN (Remaining)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| SDNController | SDN controllers | Medium |
-| SDNIPAM | IP address management | Medium |
-| SDNDNS | DNS integration | Medium |
-
-#### Access Control (Remaining)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| AuthDomain | Authentication domains (LDAP, AD, PAM) | Medium |
-| TFA | Two-factor authentication | Medium |
-| Password | User password management | Low |
+| CephMDS | Ceph metadata server | Medium |
+| CephFS | CephFS filesystems | Medium |
+| CephConfig | Ceph cluster configuration | Low |
 
 #### Node Management (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| Node | Node configuration and status | High |
-| NodeDNS | DNS settings | Medium |
 | NodeHosts | /etc/hosts entries | Low |
 | NodeTime | Time zone settings | Low |
 | NodeSyslog | Syslog configuration | Low |
-| NodeServices | System services | Medium |
+| NodeServices | System services | Low |
 | NodeSubscription | Subscription status | Low |
 | NodeApt | APT repositories | Low |
 
@@ -114,61 +101,17 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| DiskDirectory | Directory storage setup | Medium |
-| DiskLVM | LVM configuration | Medium |
-| DiskLVMThin | LVM thin pool configuration | Medium |
-| DiskZFS | ZFS pool configuration | Medium |
+| DiskDirectory | Directory storage setup | Low |
+| DiskLVM | LVM configuration | Low |
+| DiskLVMThin | LVM thin pool configuration | Low |
+| DiskZFS | ZFS pool configuration | Low |
 
-#### Ceph (`/nodes/{node}/ceph`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| CephConfig | Ceph configuration | Medium |
-| CephMon | Ceph monitor daemons | Medium |
-| CephMgr | Ceph manager daemons | Medium |
-| CephOSD | Ceph object storage daemons | Medium |
-| CephMDS | Ceph metadata server | Medium |
-| CephPool | Ceph storage pools | High |
-| CephFS | CephFS filesystems | Medium |
-
-#### VM Operations (`/nodes/{node}/qemu/{vmid}`)
+#### SDN (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| VMSnapshot | VM snapshots | High |
-| VMClone | Clone VMs | High |
-| VMTemplate | Convert VM to template | High |
-| VMMigrate | Live migration | High |
-| VMBackup | VM backup operations | High |
-| VMFirewall | VM firewall rules | Medium |
-| VMCloudInit | Cloud-init configuration | High |
-| VMAgent | QEMU guest agent | Medium |
-| VMPendingChanges | Pending config changes | Low |
-
-#### Container Operations (`/nodes/{node}/lxc/{vmid}`) (Remaining)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| ContainerClone | Clone containers | High |
-| ContainerTemplate | Convert to template | High |
-| ContainerMigrate | Container migration | High |
-| ContainerBackup | Container backup | High |
-| ContainerFirewall | Container firewall rules | Medium |
-
-#### Storage Content (`/nodes/{node}/storage/{storage}`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| StorageContent | Storage content/volumes | High |
-| ISOImage | ISO images | Medium |
-| ContainerTemplate | CT templates | Medium |
-| VZDump | Backup files | Medium |
-
-#### Metrics & Monitoring (`/cluster/metrics`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| MetricsServer | External metrics servers | Low |
+| SDNIPAM | IP address management | Medium |
+| SDNDNS | DNS integration | Low |
 
 #### Notifications (`/cluster/notifications`)
 
@@ -183,33 +126,32 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 ### ✅ Phase 1: Core Infrastructure - COMPLETE
 1. ✅ VirtualMachine
 2. ✅ Container
-3. ✅ Storage
-4. ✅ User, Group, Role, ACL, APIToken (Access Control)
+3. ✅ Storage, StorageContent
+4. ✅ User, Group, Role, ACL, APIToken, AuthDomain (Access Control)
 5. ✅ Pool (Resource Pools)
-6. ✅ NodeNetwork
+6. ✅ Node, NodeNetwork, NodeDNS
 
-### ✅ Phase 2: Operations & Lifecycle - PARTIAL
+### ✅ Phase 2: Operations & Lifecycle - COMPLETE
 7. ✅ VMSnapshot, ContainerSnapshot
-8. 🔜 VMClone, ContainerClone
-9. 🔜 VMTemplate, ContainerTemplate
-10. 🔜 VMMigrate, ContainerMigrate
+8. ✅ VMClone, ContainerClone
+9. ✅ VMTemplate, ContainerTemplate
+10. ✅ VMMigrate, ContainerMigrate
 11. ✅ BackupJob
 
-### ✅ Phase 3: High Availability & Clustering - PARTIAL
+### ✅ Phase 3: High Availability & Clustering - COMPLETE
 12. ✅ HAGroup, HAResource
 13. ✅ ReplicationJob
-14. 🔜 ClusterConfig, ClusterStatus
+14. ✅ ClusterStatus, ClusterOptions
 
 ### ✅ Phase 4: Networking & Security - COMPLETE
-15. ✅ SDNZone, SDNVNet, SDNSubnet
-16. ✅ FirewallClusterRule, FirewallGroup
-17. 🔜 FirewallVMRules, FirewallNodeRules
+15. ✅ SDNZone, SDNVNet, SDNSubnet, SDNController
+16. ✅ FirewallClusterRule, FirewallGroup, FirewallAlias, FirewallIPSet
+17. ✅ FirewallVMRule, FirewallNodeRule
 
-### ✅ Phase 5: Advanced Features - PARTIAL
-18. ✅ ACMEAccount
-19. 🔜 CephPool, CephOSD, CephMon
-20. 🔜 VMCloudInit, VMAgent
-21. 🔜 Remaining resources
+### ✅ Phase 5: Advanced Features - COMPLETE
+18. ✅ ACMEAccount, ACMEPlugin, Certificate
+19. ✅ CephPool, CephOSD, CephMon, CephMgr
+20. ✅ MetricsServer
 
 ## Currently Implemented Resources
 
@@ -219,6 +161,7 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 
 ### Storage
 - **Storage** - Manage storage pools and volumes
+- **StorageContent** - Upload/download ISOs, templates, backups
 
 ### Access Control
 - **User** - Manage user accounts
@@ -226,19 +169,37 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 - **Role** - Manage permission roles
 - **ACL** - Manage access control lists
 - **APIToken** - Manage API tokens
+- **AuthDomain** - Manage LDAP, AD, OpenID authentication domains
 
 ### Resource Management
 - **Pool** - Manage resource pools
 
-### Networking
+### Cluster Management
+- **ClusterStatus** - Query cluster status and health
+- **ClusterOptions** - Configure datacenter-wide options
+
+### Node Management
+- **Node** - Query node status and metrics
 - **NodeNetwork** - Manage network interfaces
-- **SDNZone** - Manage SDN zones
+- **NodeDNS** - Configure DNS settings
+
+### VM Operations
+- **VMSnapshot** - Manage VM snapshots
+- **VMClone** - Clone virtual machines
+- **VMTemplate** - Convert VMs to templates
+- **VMMigrate** - Live/offline VM migration
+
+### Container Operations
+- **ContainerSnapshot** - Manage container snapshots
+- **ContainerClone** - Clone containers
+- **ContainerTemplate** - Convert containers to templates
+- **ContainerMigrate** - Container migration
+
+### SDN (Software Defined Networking)
+- **SDNZone** - Manage SDN zones (VXLAN, EVPN, etc.)
 - **SDNVNet** - Manage virtual networks
 - **SDNSubnet** - Manage network subnets
-
-### Snapshots
-- **VMSnapshot** - Manage VM snapshots
-- **ContainerSnapshot** - Manage container snapshots
+- **SDNController** - Manage SDN controllers (BGP, EVPN)
 
 ### High Availability
 - **HAGroup** - Manage HA failover groups
@@ -250,12 +211,27 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 ### Firewall
 - **FirewallClusterRule** - Manage cluster firewall rules
 - **FirewallGroup** - Manage firewall security groups
+- **FirewallAlias** - Manage IP/network aliases
+- **FirewallIPSet** - Manage IP sets for rules
+- **FirewallVMRule** - Manage VM-specific firewall rules
+- **FirewallNodeRule** - Manage node-specific firewall rules
 
 ### Backup
 - **BackupJob** - Manage scheduled backup jobs
 
 ### ACME/SSL
-- **ACMEAccount** - Manage ACME accounts
+- **ACMEAccount** - Manage ACME/Let's Encrypt accounts
+- **ACMEPlugin** - Manage ACME DNS plugins
+- **Certificate** - Order/renew SSL certificates
+
+### Ceph Storage
+- **CephPool** - Manage Ceph storage pools
+- **CephOSD** - Manage Ceph object storage daemons
+- **CephMon** - Manage Ceph monitor daemons
+- **CephMgr** - Manage Ceph manager daemons
+
+### Monitoring
+- **MetricsServer** - Configure InfluxDB/Graphite metrics export
 
 ## Authentication
 

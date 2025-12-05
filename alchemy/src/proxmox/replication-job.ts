@@ -23,7 +23,7 @@ export interface ReplicationJobProps extends ProxmoxApiOptions {
 
   /**
    * Replication schedule (cron format)
-   * @default "*/15" (every 15 minutes)
+   * @default every 15 minutes
    */
   schedule?: string;
 
