@@ -97,8 +97,8 @@ export interface BackupJobProps extends ProxmoxApiOptions {
   comment?: string;
 
   /**
-   * Include RAM in backup (for VMs)
-   * @default false
+   * Use pigz for parallel gzip compression (number of threads)
+   * @default 0 (disabled)
    */
   pigz?: number;
 

@@ -27,7 +27,7 @@ export interface SDNVNetProps extends ProxmoxApiOptions {
   alias?: string;
 
   /**
-   * VXLAN VNI (for VXLAN zones)
+   * Enable VLAN awareness on the VNet
    */
   vlanaware?: boolean;
 
