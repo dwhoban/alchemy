@@ -38,6 +38,10 @@
       "bun": "./src/llms.ts",
       "import": "./lib/llms.js"
     },
+    "./1password": {
+      "bun": "./src/1password/index.ts",
+      "import": "./lib/1password/index.js"
+    },
     "./coinbase": {
       "bun": "./src/coinbase/index.ts",
       "import": "./lib/coinbase/index.js"
@@ -207,6 +211,7 @@
     "yaml": "^2.0.0"
   },
   "peerDependencies": {
+    "@1password/sdk": "^0.1.6",
     "@astrojs/cloudflare": "^12.6.4",
     "@aws-sdk/client-dynamodb": "^3.0.0",
     "@coinbase/cdp-sdk": "^0.10.0",
@@ -228,6 +233,9 @@
     "wrangler": "catalog:"
   },
   "peerDependenciesMeta": {
+    "@1password/sdk": {
+      "optional": true
+    },
     "@astrojs/cloudflare": {
       "optional": true
     },
@@ -284,6 +292,7 @@
     }
   },
   "devDependencies": {
+    "@1password/sdk": "^0.1.6",
     "@astrojs/cloudflare": "^12.6.4",
     "@aws-sdk/client-dynamodb": "^3.0.0",
     "@aws-sdk/client-ec2": "^3.868.0",
