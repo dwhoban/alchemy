@@ -1,10 +1,7 @@
 import { describe, expect } from "vitest";
 import { alchemy } from "../../src/alchemy.ts";
 import { destroy } from "../../src/destroy.ts";
-import {
-  createOnePasswordClient,
-  type OnePasswordApiOptions,
-} from "../../src/1password/api.ts";
+import { createOnePasswordClient } from "../../src/1password/api.ts";
 import { Item, isItem } from "../../src/1password/item.ts";
 import { BRANCH_PREFIX } from "../util.ts";
 // must import this or else alchemy.test won't exist
@@ -25,6 +22,8 @@ describe("1Password Item Resource", () => {
     "create, update, and delete 1password item",
     async (scope) => {
       let item: Item | undefined;
+      // Create client once and reuse
+      const client = await createOnePasswordClient();
       try {
         // Create a test 1Password item - Secure Note
         const itemTitle = `Test Item ${testId}`;
@@ -52,7 +51,6 @@ describe("1Password Item Resource", () => {
         expect(isItem(null)).toBe(false);
 
         // Verify item was created by querying the API directly
-        const client = await createOnePasswordClient();
         const fetchedItem = await client.items.get(item.vaultId, item.id);
         expect(fetchedItem.title).toEqual(itemTitle);
 
@@ -83,7 +81,6 @@ describe("1Password Item Resource", () => {
 
         // Verify item was deleted
         if (item?.id) {
-          const client = await createOnePasswordClient();
           try {
             await client.items.get(item.vaultId, item.id);
             // If we get here, the item wasn't deleted
@@ -155,6 +152,8 @@ describe("1Password Item Resource", () => {
     "does not delete item when delete is false",
     async (scope) => {
       let item: Item | undefined;
+      // Create client once and reuse
+      const client = await createOnePasswordClient();
       try {
         const itemTitle = `Test No Delete ${testId}`;
         item = await Item(`${testId}-no-delete`, {
@@ -170,7 +169,6 @@ describe("1Password Item Resource", () => {
 
         if (item?.id) {
           // Verify item still exists
-          const client = await createOnePasswordClient();
           const fetchedItem = await client.items.get(item.vaultId, item.id);
           expect(fetchedItem.id).toEqual(item.id);
 
