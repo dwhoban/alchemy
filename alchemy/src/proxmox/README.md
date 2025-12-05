@@ -10,15 +10,34 @@ The Proxmox provider uses the [proxmox-api](https://github.com/UrielCh/proxmox-a
 
 ### ✅ Implemented Resources
 
-| Resource | Description | Status |
-|----------|-------------|--------|
-| VirtualMachine | QEMU/KVM virtual machines | ✅ Complete |
-| Container | LXC containers | ✅ Complete |
-| Storage | Storage pools (dir, lvm, nfs, etc.) | ✅ Complete |
+| Category | Resource | Description | Status |
+|----------|----------|-------------|--------|
+| **Compute** | VirtualMachine | QEMU/KVM virtual machines | ✅ Complete |
+| **Compute** | Container | LXC containers | ✅ Complete |
+| **Storage** | Storage | Storage pools (dir, lvm, nfs, etc.) | ✅ Complete |
+| **Access Control** | User | User accounts | ✅ Complete |
+| **Access Control** | Group | User groups | ✅ Complete |
+| **Access Control** | Role | Permission roles | ✅ Complete |
+| **Access Control** | ACL | Access control lists | ✅ Complete |
+| **Access Control** | APIToken | API tokens | ✅ Complete |
+| **Resource Pools** | Pool | Resource pools | ✅ Complete |
+| **Networking** | NodeNetwork | Network interfaces | ✅ Complete |
+| **Snapshots** | VMSnapshot | VM snapshots | ✅ Complete |
+| **Snapshots** | ContainerSnapshot | Container snapshots | ✅ Complete |
+| **High Availability** | HAGroup | HA failover groups | ✅ Complete |
+| **High Availability** | HAResource | HA managed resources | ✅ Complete |
+| **Replication** | ReplicationJob | VM/CT replication jobs | ✅ Complete |
+| **Firewall** | FirewallClusterRule | Cluster firewall rules | ✅ Complete |
+| **Firewall** | FirewallGroup | Security groups | ✅ Complete |
+| **SDN** | SDNZone | Virtual network zones | ✅ Complete |
+| **SDN** | SDNVNet | Virtual networks | ✅ Complete |
+| **SDN** | SDNSubnet | Network subnets | ✅ Complete |
+| **Backup** | BackupJob | Scheduled backup jobs | ✅ Complete |
+| **ACME/SSL** | ACMEAccount | Let's Encrypt accounts | ✅ Complete |
 
-### 🚧 Planned Resources - Full API Coverage
+### 🚧 Planned Resources - Remaining API Coverage
 
-Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the following resources are planned for implementation:
+Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the following resources are planned for future implementation:
 
 #### Cluster Management (`/cluster`)
 
@@ -30,85 +49,52 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 | ClusterOptions | Datacenter-wide options | Medium |
 | ClusterJoin | Join nodes to cluster | Medium |
 
-#### High Availability (`/cluster/ha`)
+#### Backup (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| HAGroup | HA failover groups | High |
-| HAResource | HA managed resources (VMs/CTs) | High |
-| HAStatus | HA manager status | Medium |
-
-#### Replication (`/cluster/replication`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| ReplicationJob | VM/CT replication jobs | High |
-
-#### Backup (`/cluster/backup` & `/nodes/{node}/vzdump`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| BackupJob | Scheduled backup jobs | High |
 | Backup | Manual backup operations | High |
 | BackupConfig | Backup job configuration | Medium |
 
-#### Firewall (`/cluster/firewall` & `/nodes/{node}/firewall`)
+#### Firewall (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| FirewallClusterRules | Cluster-wide firewall rules | High |
 | FirewallClusterOptions | Cluster firewall options | Medium |
-| FirewallGroup | Security groups | High |
 | FirewallAlias | IP/network aliases | Medium |
 | FirewallIPSet | IP sets for rules | Medium |
 | FirewallNodeRules | Node-specific firewall rules | Medium |
 | FirewallVMRules | VM/CT firewall rules | Medium |
 
-#### ACME/SSL (`/cluster/acme` & `/nodes/{node}/certificates`)
+#### ACME/SSL (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| ACMEAccount | Let's Encrypt accounts | Medium |
 | ACMEPlugin | ACME DNS plugins | Medium |
 | Certificate | Node SSL certificates | Medium |
 | ACMEChallenge | Certificate challenges | Low |
 
-#### SDN - Software Defined Networking (`/cluster/sdn`)
+#### SDN (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| SDNZone | Virtual network zones | High |
-| SDNVNet | Virtual networks | High |
-| SDNSubnet | Network subnets | High |
 | SDNController | SDN controllers | Medium |
 | SDNIPAM | IP address management | Medium |
 | SDNDNS | DNS integration | Medium |
 
-#### Access Control (`/access`)
+#### Access Control (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| User | User accounts | High |
-| Group | User groups | High |
-| Role | Permission roles | High |
-| ACL | Access control lists | High |
 | AuthDomain | Authentication domains (LDAP, AD, PAM) | Medium |
-| APIToken | API tokens | High |
 | TFA | Two-factor authentication | Medium |
 | Password | User password management | Low |
 
-#### Resource Pools (`/pools`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| Pool | Resource pools | High |
-
-#### Node Management (`/nodes/{node}`)
+#### Node Management (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
 | Node | Node configuration and status | High |
-| NodeNetwork | Network interfaces | High |
 | NodeDNS | DNS settings | Medium |
 | NodeHosts | /etc/hosts entries | Low |
 | NodeTime | Time zone settings | Low |
@@ -159,11 +145,10 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 | VMAgent | QEMU guest agent | Medium |
 | VMPendingChanges | Pending config changes | Low |
 
-#### Container Operations (`/nodes/{node}/lxc/{vmid}`)
+#### Container Operations (`/nodes/{node}/lxc/{vmid}`) (Remaining)
 
 | Resource | Description | Priority |
 |----------|-------------|----------|
-| ContainerSnapshot | Container snapshots | High |
 | ContainerClone | Clone containers | High |
 | ContainerTemplate | Convert to template | High |
 | ContainerMigrate | Container migration | High |
@@ -193,46 +178,84 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 | NotificationMatcher | Notification matchers | Low |
 | NotificationTarget | Notification targets | Low |
 
-## Implementation Priority
+## Implementation Progress
 
-The implementation will follow this priority order:
-
-### Phase 1: Core Infrastructure (Current + Next)
+### ✅ Phase 1: Core Infrastructure - COMPLETE
 1. ✅ VirtualMachine
 2. ✅ Container
 3. ✅ Storage
-4. 🔜 User, Group, Role, ACL (Access Control)
-5. 🔜 Pool (Resource Pools)
-6. 🔜 Node, NodeNetwork
+4. ✅ User, Group, Role, ACL, APIToken (Access Control)
+5. ✅ Pool (Resource Pools)
+6. ✅ NodeNetwork
 
-### Phase 2: Operations & Lifecycle
-7. VMSnapshot, ContainerSnapshot
-8. VMClone, ContainerClone
-9. VMTemplate, ContainerTemplate
-10. VMMigrate, ContainerMigrate
-11. BackupJob, Backup
+### ✅ Phase 2: Operations & Lifecycle - PARTIAL
+7. ✅ VMSnapshot, ContainerSnapshot
+8. 🔜 VMClone, ContainerClone
+9. 🔜 VMTemplate, ContainerTemplate
+10. 🔜 VMMigrate, ContainerMigrate
+11. ✅ BackupJob
 
-### Phase 3: High Availability & Clustering
-12. HAGroup, HAResource
-13. ReplicationJob
-14. ClusterConfig, ClusterStatus
+### ✅ Phase 3: High Availability & Clustering - PARTIAL
+12. ✅ HAGroup, HAResource
+13. ✅ ReplicationJob
+14. 🔜 ClusterConfig, ClusterStatus
 
-### Phase 4: Networking & Security
-15. SDNZone, SDNVNet, SDNSubnet
-16. FirewallClusterRules, FirewallGroup
-17. FirewallVMRules, FirewallNodeRules
+### ✅ Phase 4: Networking & Security - COMPLETE
+15. ✅ SDNZone, SDNVNet, SDNSubnet
+16. ✅ FirewallClusterRule, FirewallGroup
+17. 🔜 FirewallVMRules, FirewallNodeRules
 
-### Phase 5: Advanced Features
-18. ACMEAccount, ACMEPlugin, Certificate
-19. CephPool, CephOSD, CephMon
-20. VMCloudInit, VMAgent
-21. Remaining resources
+### ✅ Phase 5: Advanced Features - PARTIAL
+18. ✅ ACMEAccount
+19. 🔜 CephPool, CephOSD, CephMon
+20. 🔜 VMCloudInit, VMAgent
+21. 🔜 Remaining resources
 
-## Resources (Currently Implemented)
+## Currently Implemented Resources
 
+### Compute
 - **VirtualMachine** - Manage QEMU/KVM virtual machines
 - **Container** - Manage LXC containers
+
+### Storage
 - **Storage** - Manage storage pools and volumes
+
+### Access Control
+- **User** - Manage user accounts
+- **Group** - Manage user groups
+- **Role** - Manage permission roles
+- **ACL** - Manage access control lists
+- **APIToken** - Manage API tokens
+
+### Resource Management
+- **Pool** - Manage resource pools
+
+### Networking
+- **NodeNetwork** - Manage network interfaces
+- **SDNZone** - Manage SDN zones
+- **SDNVNet** - Manage virtual networks
+- **SDNSubnet** - Manage network subnets
+
+### Snapshots
+- **VMSnapshot** - Manage VM snapshots
+- **ContainerSnapshot** - Manage container snapshots
+
+### High Availability
+- **HAGroup** - Manage HA failover groups
+- **HAResource** - Manage HA resources
+
+### Replication
+- **ReplicationJob** - Manage replication jobs
+
+### Firewall
+- **FirewallClusterRule** - Manage cluster firewall rules
+- **FirewallGroup** - Manage firewall security groups
+
+### Backup
+- **BackupJob** - Manage scheduled backup jobs
+
+### ACME/SSL
+- **ACMEAccount** - Manage ACME accounts
 
 ## Authentication
 
