@@ -110,7 +110,10 @@ export interface ContainerProps extends ProxmoxApiOptions {
   features?: string;
 
   /**
-   * Additional container configuration options
+   * Additional container configuration options passed directly to the Proxmox API.
+   * Use this for advanced configuration not covered by the typed properties.
+   * Parameters are passed directly to the Proxmox API without validation.
+   * @see https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc
    */
   additionalConfig?: Record<string, string | number | boolean>;
 }

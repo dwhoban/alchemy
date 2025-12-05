@@ -104,7 +104,10 @@ export interface StorageProps extends ProxmoxApiOptions {
   shared?: boolean;
 
   /**
-   * Additional storage configuration options
+   * Additional storage configuration options passed directly to the Proxmox API.
+   * Use this for advanced configuration not covered by the typed properties.
+   * Parameters are passed directly to the Proxmox API without validation.
+   * @see https://pve.proxmox.com/pve-docs/api-viewer/#/storage
    */
   additionalConfig?: Record<string, string | number | boolean>;
 

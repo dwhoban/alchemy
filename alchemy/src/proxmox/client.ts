@@ -91,6 +91,9 @@ export async function createProxmoxClient(
   const port = options.port ?? 8006;
 
   // Handle SSL certificate verification
+  // WARNING: Setting NODE_TLS_REJECT_UNAUTHORIZED affects all HTTPS requests in the process.
+  // This is the mechanism used by the proxmox-api SDK for self-signed certificate support.
+  // Use with caution in production environments. Consider using a valid SSL certificate instead.
   if (options.rejectUnauthorized === false) {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   }

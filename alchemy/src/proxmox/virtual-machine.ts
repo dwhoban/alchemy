@@ -116,7 +116,10 @@ export interface VirtualMachineProps extends ProxmoxApiOptions {
   scsihw?: string;
 
   /**
-   * Additional VM configuration options
+   * Additional VM configuration options passed directly to the Proxmox API.
+   * Use this for advanced configuration not covered by the typed properties.
+   * Parameters are passed directly to the Proxmox API without validation.
+   * @see https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/qemu
    */
   additionalConfig?: Record<string, string | number | boolean>;
 }
