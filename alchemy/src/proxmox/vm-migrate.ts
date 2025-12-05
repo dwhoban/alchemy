@@ -182,10 +182,8 @@ export const VMMigrate = Resource(
 
     switch (this.phase) {
       case "delete": {
-        // Optionally migrate back on delete
-        if (props.delete !== false && this.output?.sourceNode) {
-          // Migration back is not automatic - user should handle this
-        }
+        // Migration resources don't automatically migrate back on delete
+        // Users should handle rollback manually if needed
         return this.destroy();
       }
 
