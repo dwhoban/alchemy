@@ -176,7 +176,7 @@ export interface ItemProps extends OnePasswordApiOptions {
 /**
  * Output returned after 1Password Item creation/update
  */
-export type Item = Omit<ItemProps, "delete" | "serviceAccountToken"> & {
+export type Item = Omit<ItemProps, "delete" | "serviceAccountToken" | "integrationName" | "integrationVersion"> & {
   /**
    * The item's unique ID assigned by 1Password
    */
@@ -466,20 +466,20 @@ export const Item = Resource(
       vaultId: result.vaultId,
       title: result.title,
       category: result.category as ItemCategory,
-      fields: result.fields.map((f) => ({
+      fields: result.fields.map((f: { id: string; title: string; sectionId?: string; fieldType: string; value: string }) => ({
         id: f.id,
         title: f.title,
         sectionId: f.sectionId,
         fieldType: f.fieldType as ItemFieldType,
         value: f.value,
       })),
-      sections: result.sections.map((s) => ({
+      sections: result.sections.map((s: { id: string; title: string }) => ({
         id: s.id,
         title: s.title,
       })),
       notes: result.notes,
       tags: result.tags,
-      websites: result.websites.map((w) => ({
+      websites: result.websites.map((w: { url: string; label: string; autofillBehavior: string }) => ({
         url: w.url,
         label: w.label,
         autofillBehavior: w.autofillBehavior as ItemWebsite["autofillBehavior"],
@@ -487,8 +487,6 @@ export const Item = Resource(
       version: result.version,
       createdAt: result.createdAt,
       updatedAt: result.updatedAt,
-      integrationName: props.integrationName,
-      integrationVersion: props.integrationVersion,
     };
   },
 );
