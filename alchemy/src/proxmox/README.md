@@ -8,7 +8,7 @@ The Proxmox provider uses the [proxmox-api](https://github.com/UrielCh/proxmox-a
 
 ## Implementation Status
 
-### ✅ Implemented Resources (41 Total)
+### ✅ Implemented Resources (59 Total)
 
 | Category | Resource | Description | Status |
 |----------|----------|-------------|--------|
@@ -25,9 +25,17 @@ The Proxmox provider uses the [proxmox-api](https://github.com/UrielCh/proxmox-a
 | **Resource Pools** | Pool | Resource pools | ✅ Complete |
 | **Cluster** | ClusterStatus | Cluster status and health | ✅ Complete |
 | **Cluster** | ClusterOptions | Datacenter-wide options | ✅ Complete |
+| **Cluster** | ClusterResources | Cluster resource summary | ✅ Complete |
+| **Cluster** | ClusterJoin | Join nodes to cluster | ✅ Complete |
 | **Node** | Node | Node status and metrics | ✅ Complete |
 | **Node** | NodeNetwork | Network interfaces | ✅ Complete |
 | **Node** | NodeDNS | DNS settings | ✅ Complete |
+| **Node** | NodeHosts | /etc/hosts entries | ✅ Complete |
+| **Node** | NodeTime | Time zone settings | ✅ Complete |
+| **Node** | NodeServices | System services | ✅ Complete |
+| **Node** | NodeSubscription | Subscription status | ✅ Complete |
+| **Node** | NodeApt | APT repositories | ✅ Complete |
+| **Node** | NodeSyslog | Syslog query | ✅ Complete |
 | **VM Operations** | VMSnapshot | VM snapshots | ✅ Complete |
 | **VM Operations** | VMClone | Clone VMs | ✅ Complete |
 | **VM Operations** | VMTemplate | Convert VM to template | ✅ Complete |
@@ -49,6 +57,8 @@ The Proxmox provider uses the [proxmox-api](https://github.com/UrielCh/proxmox-a
 | **SDN** | SDNVNet | Virtual networks | ✅ Complete |
 | **SDN** | SDNSubnet | Network subnets | ✅ Complete |
 | **SDN** | SDNController | SDN controllers (BGP, EVPN) | ✅ Complete |
+| **SDN** | SDNIPAM | IP address management | ✅ Complete |
+| **SDN** | SDNDNS | DNS integration | ✅ Complete |
 | **Backup** | BackupJob | Scheduled backup jobs | ✅ Complete |
 | **ACME/SSL** | ACMEAccount | Let's Encrypt accounts | ✅ Complete |
 | **ACME/SSL** | ACMEPlugin | ACME DNS plugins | ✅ Complete |
@@ -57,69 +67,17 @@ The Proxmox provider uses the [proxmox-api](https://github.com/UrielCh/proxmox-a
 | **Ceph** | CephOSD | Ceph object storage daemons | ✅ Complete |
 | **Ceph** | CephMon | Ceph monitor daemons | ✅ Complete |
 | **Ceph** | CephMgr | Ceph manager daemons | ✅ Complete |
+| **Ceph** | CephMDS | Ceph metadata server | ✅ Complete |
+| **Ceph** | CephFS | CephFS filesystems | ✅ Complete |
+| **Disks** | DiskDirectory | Directory storage setup | ✅ Complete |
+| **Disks** | DiskLVM | LVM configuration | ✅ Complete |
+| **Disks** | DiskLVMThin | LVM thin pool configuration | ✅ Complete |
+| **Disks** | DiskZFS | ZFS pool configuration | ✅ Complete |
+| **Hardware** | PCIDevice | PCI device passthrough | ✅ Complete |
+| **Hardware** | USBDevice | USB device passthrough | ✅ Complete |
+| **Notifications** | NotificationEndpoint | Notification endpoints | ✅ Complete |
+| **Notifications** | NotificationMatcher | Notification matchers | ✅ Complete |
 | **Monitoring** | MetricsServer | InfluxDB/Graphite metrics | ✅ Complete |
-
-### 🚧 Planned Resources - Remaining API Coverage
-
-Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the following resources are planned for future implementation:
-
-#### Cluster Management (`/cluster`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| ClusterConfig | Cluster-wide configuration | Medium |
-| ClusterResources | Cluster resource summary | Low |
-| ClusterJoin | Join nodes to cluster | Low |
-
-#### Ceph (Remaining)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| CephMDS | Ceph metadata server | Medium |
-| CephFS | CephFS filesystems | Medium |
-| CephConfig | Ceph cluster configuration | Low |
-
-#### Node Management (Remaining)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| NodeHosts | /etc/hosts entries | Low |
-| NodeTime | Time zone settings | Low |
-| NodeSyslog | Syslog configuration | Low |
-| NodeServices | System services | Low |
-| NodeSubscription | Subscription status | Low |
-| NodeApt | APT repositories | Low |
-
-#### Node Hardware (`/nodes/{node}/hardware`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| PCIDevice | PCI device passthrough | Medium |
-| USBDevice | USB device passthrough | Medium |
-
-#### Node Disks (`/nodes/{node}/disks`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| DiskDirectory | Directory storage setup | Low |
-| DiskLVM | LVM configuration | Low |
-| DiskLVMThin | LVM thin pool configuration | Low |
-| DiskZFS | ZFS pool configuration | Low |
-
-#### SDN (Remaining)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| SDNIPAM | IP address management | Medium |
-| SDNDNS | DNS integration | Low |
-
-#### Notifications (`/cluster/notifications`)
-
-| Resource | Description | Priority |
-|----------|-------------|----------|
-| NotificationEndpoint | Notification endpoints | Low |
-| NotificationMatcher | Notification matchers | Low |
-| NotificationTarget | Notification targets | Low |
 
 ## Implementation Progress
 
@@ -129,7 +87,7 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 3. ✅ Storage, StorageContent
 4. ✅ User, Group, Role, ACL, APIToken, AuthDomain (Access Control)
 5. ✅ Pool (Resource Pools)
-6. ✅ Node, NodeNetwork, NodeDNS
+6. ✅ Node, NodeNetwork, NodeDNS, NodeHosts, NodeTime, NodeServices, NodeSubscription, NodeApt, NodeSyslog
 
 ### ✅ Phase 2: Operations & Lifecycle - COMPLETE
 7. ✅ VMSnapshot, ContainerSnapshot
@@ -141,17 +99,20 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 ### ✅ Phase 3: High Availability & Clustering - COMPLETE
 12. ✅ HAGroup, HAResource
 13. ✅ ReplicationJob
-14. ✅ ClusterStatus, ClusterOptions
+14. ✅ ClusterStatus, ClusterOptions, ClusterResources, ClusterJoin
 
 ### ✅ Phase 4: Networking & Security - COMPLETE
-15. ✅ SDNZone, SDNVNet, SDNSubnet, SDNController
+15. ✅ SDNZone, SDNVNet, SDNSubnet, SDNController, SDNIPAM, SDNDNS
 16. ✅ FirewallClusterRule, FirewallGroup, FirewallAlias, FirewallIPSet
 17. ✅ FirewallVMRule, FirewallNodeRule
 
 ### ✅ Phase 5: Advanced Features - COMPLETE
 18. ✅ ACMEAccount, ACMEPlugin, Certificate
-19. ✅ CephPool, CephOSD, CephMon, CephMgr
+19. ✅ CephPool, CephOSD, CephMon, CephMgr, CephMDS, CephFS
 20. ✅ MetricsServer
+21. ✅ DiskDirectory, DiskLVM, DiskLVMThin, DiskZFS
+22. ✅ PCIDevice, USBDevice
+23. ✅ NotificationEndpoint, NotificationMatcher
 
 ## Currently Implemented Resources
 
@@ -177,11 +138,19 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 ### Cluster Management
 - **ClusterStatus** - Query cluster status and health
 - **ClusterOptions** - Configure datacenter-wide options
+- **ClusterResources** - Query cluster resource summary
+- **ClusterJoin** - Join nodes to cluster
 
 ### Node Management
 - **Node** - Query node status and metrics
 - **NodeNetwork** - Manage network interfaces
 - **NodeDNS** - Configure DNS settings
+- **NodeHosts** - Manage /etc/hosts entries
+- **NodeTime** - Configure time zone
+- **NodeServices** - Manage system services
+- **NodeSubscription** - Manage subscription status
+- **NodeApt** - Manage APT repositories
+- **NodeSyslog** - Query syslog entries
 
 ### VM Operations
 - **VMSnapshot** - Manage VM snapshots
@@ -200,6 +169,8 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 - **SDNVNet** - Manage virtual networks
 - **SDNSubnet** - Manage network subnets
 - **SDNController** - Manage SDN controllers (BGP, EVPN)
+- **SDNIPAM** - Manage IP address management
+- **SDNDNS** - Manage DNS integration
 
 ### High Availability
 - **HAGroup** - Manage HA failover groups
@@ -229,6 +200,22 @@ Based on the [Proxmox VE API](https://pve.proxmox.com/pve-docs/api-viewer/), the
 - **CephOSD** - Manage Ceph object storage daemons
 - **CephMon** - Manage Ceph monitor daemons
 - **CephMgr** - Manage Ceph manager daemons
+- **CephMDS** - Manage Ceph metadata servers
+- **CephFS** - Manage CephFS filesystems
+
+### Disk Management
+- **DiskDirectory** - Create directory storage on disks
+- **DiskLVM** - Create LVM volume groups
+- **DiskLVMThin** - Create LVM thin pools
+- **DiskZFS** - Create ZFS storage pools
+
+### Hardware Passthrough
+- **PCIDevice** - Query PCI devices for passthrough
+- **USBDevice** - Query USB devices for passthrough
+
+### Notifications
+- **NotificationEndpoint** - Manage notification endpoints (sendmail, SMTP, Gotify)
+- **NotificationMatcher** - Manage notification routing rules
 
 ### Monitoring
 - **MetricsServer** - Configure InfluxDB/Graphite metrics export

@@ -23,11 +23,19 @@ export * from "./pool.ts";
 // Cluster Management
 export * from "./cluster-status.ts";
 export * from "./cluster-options.ts";
+export * from "./cluster-resources.ts";
+export * from "./cluster-join.ts";
 
 // Node Management
 export * from "./node.ts";
 export * from "./node-network.ts";
 export * from "./node-dns.ts";
+export * from "./node-hosts.ts";
+export * from "./node-time.ts";
+export * from "./node-services.ts";
+export * from "./node-subscription.ts";
+export * from "./node-apt.ts";
+export * from "./node-syslog.ts";
 
 // VM Operations
 export * from "./vm-snapshot.ts";
@@ -61,6 +69,8 @@ export * from "./sdn-zone.ts";
 export * from "./sdn-vnet.ts";
 export * from "./sdn-subnet.ts";
 export * from "./sdn-controller.ts";
+export * from "./sdn-ipam.ts";
+export * from "./sdn-dns.ts";
 
 // Backup
 export * from "./backup-job.ts";
@@ -75,6 +85,22 @@ export * from "./ceph-pool.ts";
 export * from "./ceph-osd.ts";
 export * from "./ceph-mon.ts";
 export * from "./ceph-mgr.ts";
+export * from "./ceph-mds.ts";
+export * from "./ceph-fs.ts";
+
+// Disk Management
+export * from "./disk-directory.ts";
+export * from "./disk-lvm.ts";
+export * from "./disk-lvmthin.ts";
+export * from "./disk-zfs.ts";
+
+// Hardware Passthrough
+export * from "./pci-device.ts";
+export * from "./usb-device.ts";
+
+// Notifications
+export * from "./notification-endpoint.ts";
+export * from "./notification-matcher.ts";
 
 // Metrics & Monitoring
 export * from "./metrics-server.ts";
