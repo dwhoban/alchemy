@@ -2,7 +2,7 @@ import { describe, expect } from "vitest";
 import { alchemy } from "../../src/alchemy.ts";
 import { destroy } from "../../src/destroy.ts";
 import { createOnePasswordClient } from "../../src/1password/api.ts";
-import { Item, isItem } from "../../src/1password/item.ts";
+import { Item, ItemRef, isItem } from "../../src/1password/item.ts";
 import { BRANCH_PREFIX } from "../util.ts";
 // must import this or else alchemy.test won't exist
 import "../../src/test/vitest.ts";
@@ -175,6 +175,133 @@ describe("1Password Item Resource", () => {
           // Manually delete the item for cleanup
           await client.items.delete(item.vaultId, item.id);
         }
+      }
+    },
+  );
+});
+
+describe("1Password ItemRef Function", () => {
+  // Use BRANCH_PREFIX for deterministic, non-colliding resource names
+  const testId = `${BRANCH_PREFIX}-test-1password-itemref`;
+
+  test.skipIf(!process.env.OP_SERVICE_ACCOUNT_TOKEN || !vaultId)(
+    "fetch existing item by vault ID and item ID",
+    async () => {
+      // Create client to create an item directly via API
+      const client = await createOnePasswordClient();
+      const sdk = await import("@1password/sdk");
+
+      // Create a test item via the API directly
+      const itemTitle = `Test ItemRef ${testId}`;
+      const createdItem = await client.items.create({
+        vaultId: vaultId!,
+        title: itemTitle,
+        category: sdk.ItemCategory.SecureNote,
+        notes: "This is a test note for ItemRef",
+        tags: ["test", "itemref"],
+      });
+
+      try {
+        // Use ItemRef to fetch the existing item
+        const fetchedItem = await ItemRef({
+          vaultId: vaultId!,
+          itemId: createdItem.id,
+        });
+
+        // Verify the fetched item matches the created item
+        expect(fetchedItem.id).toEqual(createdItem.id);
+        expect(fetchedItem.vaultId).toEqual(vaultId);
+        expect(fetchedItem.title).toEqual(itemTitle);
+        expect(fetchedItem.category).toEqual("SecureNote");
+        expect(fetchedItem.notes).toEqual("This is a test note for ItemRef");
+        expect(fetchedItem.tags).toContain("test");
+        expect(fetchedItem.tags).toContain("itemref");
+        expect(fetchedItem.version).toBeTruthy();
+        expect(fetchedItem.createdAt).toBeInstanceOf(Date);
+        expect(fetchedItem.updatedAt).toBeInstanceOf(Date);
+
+        // Verify arrays are returned correctly
+        expect(fetchedItem.fields).toBeInstanceOf(Array);
+        expect(fetchedItem.sections).toBeInstanceOf(Array);
+        expect(fetchedItem.websites).toBeInstanceOf(Array);
+      } finally {
+        // Clean up - delete the item we created
+        await client.items.delete(vaultId!, createdItem.id);
+      }
+    },
+  );
+
+  test.skipIf(!process.env.OP_SERVICE_ACCOUNT_TOKEN || !vaultId)(
+    "fetch login item with fields and websites",
+    async () => {
+      // Create client to create an item directly via API
+      const client = await createOnePasswordClient();
+      const sdk = await import("@1password/sdk");
+
+      // Create a login item via the API directly
+      const itemTitle = `Test Login ItemRef ${testId}`;
+      const createdItem = await client.items.create({
+        vaultId: vaultId!,
+        title: itemTitle,
+        category: sdk.ItemCategory.Login,
+        fields: [
+          {
+            id: "username",
+            title: "Username",
+            fieldType: sdk.ItemFieldType.Text,
+            value: "testuser@example.com",
+          },
+          {
+            id: "password",
+            title: "Password",
+            fieldType: sdk.ItemFieldType.Concealed,
+            value: "test-password-456",
+          },
+        ],
+        websites: [
+          {
+            url: "https://test.example.com",
+            label: "Test Site",
+            autofillBehavior: sdk.AutofillBehavior.AnywhereOnWebsite,
+          },
+        ],
+      });
+
+      try {
+        // Use ItemRef to fetch the existing item
+        const fetchedItem = await ItemRef({
+          vaultId: vaultId!,
+          itemId: createdItem.id,
+        });
+
+        // Verify the fetched item matches the created item
+        expect(fetchedItem.id).toEqual(createdItem.id);
+        expect(fetchedItem.title).toEqual(itemTitle);
+        expect(fetchedItem.category).toEqual("Login");
+
+        // Verify fields were fetched correctly
+        expect(fetchedItem.fields.length).toBeGreaterThanOrEqual(2);
+        const usernameField = fetchedItem.fields.find(
+          (f) => f.id === "username",
+        );
+        expect(usernameField?.value).toEqual("testuser@example.com");
+        expect(usernameField?.fieldType).toEqual("Text");
+
+        const passwordField = fetchedItem.fields.find(
+          (f) => f.id === "password",
+        );
+        expect(passwordField?.fieldType).toEqual("Concealed");
+
+        // Verify websites were fetched correctly
+        expect(fetchedItem.websites.length).toBeGreaterThanOrEqual(1);
+        const website = fetchedItem.websites.find(
+          (w) => w.url === "https://test.example.com",
+        );
+        expect(website?.label).toEqual("Test Site");
+        expect(website?.autofillBehavior).toEqual("AnywhereOnWebsite");
+      } finally {
+        // Clean up - delete the item we created
+        await client.items.delete(vaultId!, createdItem.id);
       }
     },
   );
