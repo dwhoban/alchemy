@@ -19,6 +19,17 @@ The `Item` resource creates and manages items in 1Password vaults.
 - Website autofill configuration
 - Lifecycle management (create, update, delete)
 
+### ItemRef
+
+The `ItemRef` function fetches an existing item by vault ID and item ID. This is a read-only reference that does not manage the item's lifecycle.
+
+**File**: `item.ts`
+
+**Features**:
+- Fetch existing items by vault ID and item ID
+- Returns full item data including all fields, sections, tags, and notes
+- Read-only access (no lifecycle management)
+
 ## API Client
 
 **File**: `api.ts`
@@ -54,6 +65,21 @@ const note = await Item("my-note", {
   category: "SecureNote",
   notes: "Secret content",
 });
+```
+
+### Fetch an Existing Item
+
+```ts
+import { ItemRef } from "alchemy/1password";
+
+const item = await ItemRef({
+  vaultId: "vault-id",
+  itemId: "item-id",
+});
+
+console.log(item.title);
+console.log(item.fields);
+console.log(item.notes);
 ```
 
 ### Login with Fields

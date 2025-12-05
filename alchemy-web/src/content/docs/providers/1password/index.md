@@ -44,11 +44,12 @@ export OP_SERVICE_ACCOUNT_TOKEN=<your-service-account-token>
 ## Resources
 
 - [Item](./item.md) - Create and manage items (logins, secure notes, API credentials, etc.)
+- [ItemRef](./item.md#fetching-an-existing-item-itemref) - Fetch an existing item by vault ID and item ID
 
 ## Example Usage
 
 ```ts
-import { Item } from "alchemy/1password";
+import { Item, ItemRef } from "alchemy/1password";
 
 // Create a secure note
 const note = await Item("app-secrets", {
@@ -58,6 +59,14 @@ const note = await Item("app-secrets", {
   notes: "Important configuration data",
   tags: ["production", "api"],
 });
+
+// Fetch an existing item
+const existingItem = await ItemRef({
+  vaultId: "vault-id",
+  itemId: "item-id",
+});
+console.log(existingItem.title);
+console.log(existingItem.fields);
 
 // Create a login item
 const login = await Item("service-login", {

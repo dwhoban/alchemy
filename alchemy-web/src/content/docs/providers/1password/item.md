@@ -18,6 +18,28 @@ const note = await Item("my-note", {
 });
 ```
 
+## Fetching an Existing Item (ItemRef)
+
+Use `ItemRef` to fetch an existing item by vault ID and item ID:
+
+```ts
+import { ItemRef } from "alchemy/1password";
+
+const item = await ItemRef({
+  vaultId: "abc123",
+  itemId: "xyz789",
+});
+
+// Access the full item data
+console.log(item.title);
+console.log(item.fields);
+console.log(item.notes);
+```
+
+:::note
+`ItemRef` is a read-only reference that does not manage the item's lifecycle. It simply fetches and returns the existing item data.
+:::
+
 ## Login Item
 
 Create a login item with username, password, and website for autofill:

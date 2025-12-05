@@ -540,3 +540,120 @@ export const Item = Resource(
     };
   },
 );
+
+/**
+ * Properties for referencing an existing 1Password Item
+ */
+export interface ItemRefProps extends OnePasswordApiOptions {
+  /**
+   * The ID of the vault containing the item
+   */
+  vaultId: string;
+
+  /**
+   * The ID of the item to fetch
+   */
+  itemId: string;
+}
+
+/**
+ * Fetches an existing 1Password item by vault ID and item ID.
+ * This is a read-only reference that does not manage the item's lifecycle.
+ *
+ * @example
+ * ```ts
+ * import { ItemRef } from "alchemy/1password";
+ *
+ * const item = await ItemRef({
+ *   vaultId: "abc123",
+ *   itemId: "xyz789",
+ * });
+ *
+ * console.log(item.title);
+ * console.log(item.fields);
+ * ```
+ *
+ * @param props The properties to identify the item
+ * @returns The full item data including all fields
+ */
+export async function ItemRef(
+  props: ItemRefProps,
+): Promise<Item> {
+  const client = await createOnePasswordClient(props);
+
+  // Valid categories for type safety
+  const validCategories = new Set<string>([
+    "Login", "SecureNote", "CreditCard", "CryptoWallet", "Identity",
+    "Password", "Document", "ApiCredentials", "BankAccount", "Database",
+    "DriverLicense", "Email", "MedicalRecord", "Membership", "OutdoorLicense",
+    "Passport", "Rewards", "Router", "Server", "SshKey", "SocialSecurityNumber",
+    "SoftwareLicense", "Person", "Unsupported"
+  ]);
+
+  // Valid field types for type safety
+  const validFieldTypes = new Set<string>([
+    "Text", "Concealed", "CreditCardType", "CreditCardNumber", "Phone",
+    "Url", "Totp", "Email", "Reference", "SshKey", "Menu", "MonthYear",
+    "Address", "Date", "Unsupported"
+  ]);
+
+  // Valid autofill behaviors
+  const validAutofillBehaviors = new Set<string>([
+    "AnywhereOnWebsite", "ExactDomain", "Never"
+  ]);
+
+  // Safe category mapping from SDK response
+  const mapCategoryFromSdk = (sdkCat: string): ItemCategory => {
+    if (validCategories.has(sdkCat)) {
+      return sdkCat as ItemCategory;
+    }
+    return "Unsupported";
+  };
+
+  // Safe field type mapping from SDK response
+  const mapFieldTypeFromSdk = (sdkFieldType: string): ItemFieldType => {
+    if (validFieldTypes.has(sdkFieldType)) {
+      return sdkFieldType as ItemFieldType;
+    }
+    return "Unsupported";
+  };
+
+  // Safe autofill behavior mapping from SDK response
+  const mapAutofillBehaviorFromSdk = (sdkBehavior: string): ItemWebsite["autofillBehavior"] => {
+    if (validAutofillBehaviors.has(sdkBehavior)) {
+      return sdkBehavior as ItemWebsite["autofillBehavior"];
+    }
+    return "AnywhereOnWebsite";
+  };
+
+  const result = await client.items.get(props.vaultId, props.itemId);
+
+  return {
+    id: result.id,
+    vault: props.vaultId,
+    vaultId: result.vaultId,
+    title: result.title,
+    category: mapCategoryFromSdk(result.category as string),
+    fields: result.fields.map((f: { id: string; title: string; sectionId?: string; fieldType: string; value: string }) => ({
+      id: f.id,
+      title: f.title,
+      sectionId: f.sectionId,
+      fieldType: mapFieldTypeFromSdk(f.fieldType),
+      value: f.value,
+    })),
+    sections: result.sections.map((s: { id: string; title: string }) => ({
+      id: s.id,
+      title: s.title,
+    })),
+    notes: result.notes,
+    tags: result.tags,
+    websites: result.websites.map((w: { url: string; label: string; autofillBehavior: string }) => ({
+      url: w.url,
+      label: w.label,
+      autofillBehavior: mapAutofillBehaviorFromSdk(w.autofillBehavior),
+    })),
+    version: result.version,
+    createdAt: result.createdAt,
+    updatedAt: result.updatedAt,
+  };
+}
