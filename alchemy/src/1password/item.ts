@@ -374,12 +374,38 @@ export const Item = Resource(
       return this.destroy();
     }
 
-    // Map category to SDK enum
-    const sdkCategory = sdk.ItemCategory[category] ?? sdk.ItemCategory.SecureNote;
+    // Valid categories for type safety
+    const validCategories = new Set<string>([
+      "Login", "SecureNote", "CreditCard", "CryptoWallet", "Identity",
+      "Password", "Document", "ApiCredentials", "BankAccount", "Database",
+      "DriverLicense", "Email", "MedicalRecord", "Membership", "OutdoorLicense",
+      "Passport", "Rewards", "Router", "Server", "SshKey", "SocialSecurityNumber",
+      "SoftwareLicense", "Person", "Unsupported"
+    ]);
 
-    // Map field types to SDK enum
+    // Valid field types for type safety
+    const validFieldTypes = new Set<string>([
+      "Text", "Concealed", "CreditCardType", "CreditCardNumber", "Phone",
+      "Url", "Totp", "Email", "Reference", "SshKey", "Menu", "MonthYear",
+      "Address", "Date", "Unsupported"
+    ]);
+
+    // Valid autofill behaviors
+    const validAutofillBehaviors = new Set<string>([
+      "AnywhereOnWebsite", "ExactDomain", "Never"
+    ]);
+
+    // Map category to SDK enum with validation
+    const sdkCategory = validCategories.has(category)
+      ? (sdk.ItemCategory[category as keyof typeof sdk.ItemCategory] ?? sdk.ItemCategory.SecureNote)
+      : sdk.ItemCategory.SecureNote;
+
+    // Map field types to SDK enum with validation
     const mapFieldType = (fieldType: ItemFieldType) => {
-      return sdk.ItemFieldType[fieldType] ?? sdk.ItemFieldType.Text;
+      if (validFieldTypes.has(fieldType)) {
+        return sdk.ItemFieldType[fieldType as keyof typeof sdk.ItemFieldType] ?? sdk.ItemFieldType.Text;
+      }
+      return sdk.ItemFieldType.Text;
     };
 
     // Map autofill behavior to SDK enum
@@ -392,6 +418,30 @@ export const Item = Resource(
         default:
           return sdk.AutofillBehavior.AnywhereOnWebsite;
       }
+    };
+
+    // Safe category mapping from SDK response
+    const mapCategoryFromSdk = (sdkCat: string): ItemCategory => {
+      if (validCategories.has(sdkCat)) {
+        return sdkCat as ItemCategory;
+      }
+      return "Unsupported";
+    };
+
+    // Safe field type mapping from SDK response
+    const mapFieldTypeFromSdk = (sdkFieldType: string): ItemFieldType => {
+      if (validFieldTypes.has(sdkFieldType)) {
+        return sdkFieldType as ItemFieldType;
+      }
+      return "Unsupported";
+    };
+
+    // Safe autofill behavior mapping from SDK response
+    const mapAutofillBehaviorFromSdk = (sdkBehavior: string): ItemWebsite["autofillBehavior"] => {
+      if (validAutofillBehaviors.has(sdkBehavior)) {
+        return sdkBehavior as ItemWebsite["autofillBehavior"];
+      }
+      return "AnywhereOnWebsite";
     };
 
     let result: Awaited<ReturnType<typeof client.items.get>>;
@@ -465,12 +515,12 @@ export const Item = Resource(
       vault: vaultId,
       vaultId: result.vaultId,
       title: result.title,
-      category: result.category as ItemCategory,
+      category: mapCategoryFromSdk(result.category as string),
       fields: result.fields.map((f: { id: string; title: string; sectionId?: string; fieldType: string; value: string }) => ({
         id: f.id,
         title: f.title,
         sectionId: f.sectionId,
-        fieldType: f.fieldType as ItemFieldType,
+        fieldType: mapFieldTypeFromSdk(f.fieldType),
         value: f.value,
       })),
       sections: result.sections.map((s: { id: string; title: string }) => ({
@@ -482,7 +532,7 @@ export const Item = Resource(
       websites: result.websites.map((w: { url: string; label: string; autofillBehavior: string }) => ({
         url: w.url,
         label: w.label,
-        autofillBehavior: w.autofillBehavior as ItemWebsite["autofillBehavior"],
+        autofillBehavior: mapAutofillBehaviorFromSdk(w.autofillBehavior),
       })),
       version: result.version,
       createdAt: result.createdAt,
